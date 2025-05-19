@@ -8,5 +8,6 @@
 import Foundation
 
 class RecipeData: ObservableObject {
+    
     @Published var recipes: [Recipe] = Recipe.testRecipes
 }

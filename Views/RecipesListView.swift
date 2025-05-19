@@ -13,14 +13,30 @@ struct RecipesListView: View {
     
     var body: some View {
         List{
-            ForEach(recipeData.recipes){ recipe in 
+            ForEach(recipies){ recipe in
                 Text(recipe.mainInformation.name)
             }
-        }.navigationTitle(Text(" All Recipes"))
+        }
+        .navigationTitle(Text(navigationTitle))
+    }
+}
+
+extension RecipesListView{
+    
+    // Refactor of the recipeData inside the ForEach and of the nav title
+    var recipies: [Recipe] {
+        recipeData.recipes
+    }
+    
+    var navigationTitle: String {
+        "All Recipies"
     }
 }
 
 #Preview {
-    RecipesListView()
-        .modelContainer(for: Item.self, inMemory: true)
+    NavigationStack {
+        RecipesListView()
+            .modelContainer(for: Item.self, inMemory: true)
+    }
 }
+
