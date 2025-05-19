@@ -19,12 +19,55 @@ struct RecipeDetailView: View {
                 Spacer()
             }
             HStack{
-                Text("Author: \(recipe.mainInformation.description)")
+                Text("\(recipe.mainInformation.description)")
                     .font(.subheadline)
                     .padding()
                 Spacer()
             }
             
+            //Ingredients List
+            
+            List{
+                Section(header: Text("Ingredients")) {
+                    ForEach(recipe.ingredients.indices, id: \.self){ index in
+                        
+                        let ingredient = recipe.ingredients[index]
+                        Text(ingredient.description)
+                    }
+                }
+            
+            
+            // Directions List
+            
+            
+                Section(header: Text("Directions")) {
+                    ForEach(recipe.directions.indices, id: \.self){ index in
+                        
+                        let direction = recipe.directions[index]
+                        HStack{
+                            Text("\(index + 1)")
+                                .bold()
+    
+                            if direction.isOptional {
+                                VStack{
+                                    HStack{
+                                        Text("(Optional)")
+                                            .bold()
+                                        Spacer()
+
+                                    }
+                                        Text("\(direction.description)")
+                    
+                                }
+                            } else {
+                                Text("\(direction.description)")
+                            }
+                                
+                        }
+                    }
+                }
+            }
+                
         }.navigationTitle(recipe.mainInformation.name)
     }
 }
