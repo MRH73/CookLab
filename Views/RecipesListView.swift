@@ -11,12 +11,17 @@ import SwiftData
 struct RecipesListView: View {
     @StateObject var recipeData = RecipeData()
     
+    var listForegroundColor = AppColor.foreground
+    var listBackgroundColor = AppColor.background
+    
     var body: some View {
         List{
             ForEach(recipies){ recipe in
                 NavigationLink(recipe.mainInformation.name,
                                destination: RecipeDetailView(recipe: recipe))
             }
+            .foregroundColor(listForegroundColor)
+            .listRowBackground(listBackgroundColor)
         }
         .navigationTitle(Text(navigationTitle))
     }

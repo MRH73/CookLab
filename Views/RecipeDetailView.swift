@@ -10,6 +10,9 @@ import SwiftUI
 struct RecipeDetailView: View {
     let recipe: Recipe
     
+    var listForegroundColor = AppColor.foreground
+    var listBackgroundColor = AppColor.background
+    
     var body: some View {
         VStack{
             HStack{
@@ -33,8 +36,9 @@ struct RecipeDetailView: View {
                         
                         let ingredient = recipe.ingredients[index]
                         Text(ingredient.description)
+                            .foregroundColor(listForegroundColor)
                     }
-                }
+                } .listRowBackground(listBackgroundColor)
             
             
             // Directions List
@@ -63,9 +67,9 @@ struct RecipeDetailView: View {
                                 Text("\(direction.description)")
                             }
                                 
-                        }
+                        }.foregroundColor(listForegroundColor)
                     }
-                }
+                }.listRowBackground(listBackgroundColor)
             }
                 
         }.navigationTitle(recipe.mainInformation.name)
