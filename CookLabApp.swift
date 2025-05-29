@@ -25,7 +25,7 @@ struct CookLabApp: App {
 
     var body: some Scene {
         WindowGroup {
-            RecipesListView(category: .breakfast)
+            RecipeCategoryGridView()
         }
         .modelContainer(sharedModelContainer)
     }
