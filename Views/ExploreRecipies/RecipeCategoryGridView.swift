@@ -12,42 +12,44 @@ struct RecipeCategoryGridView: View {
 
     var body: some View {
         NavigationStack {
-            GeometryReader { proxy in
-                let contentWidth = min(proxy.size.width - 32, 680)
+            ZStack {
+                AppBackgroundView()
 
-                ZStack {
-                    MainPageBackgroundView()
+                ScrollView(showsIndicators: false) {
+                    VStack(alignment: .leading, spacing: 18) {
+                        HomeHeroView()
 
-                    ScrollView(showsIndicators: false) {
-                        VStack(alignment: .leading, spacing: 18) {
-                            HomeHeroView()
+                        VStack(alignment: .leading, spacing: 14) {
+                            Text("Browse by meal")
+                                .font(.title2.bold())
+                                .foregroundStyle(.white)
 
-                            VStack(alignment: .leading, spacing: 14) {
-                                Text("Browse by meal")
-                                    .font(.title2.bold())
-                                    .foregroundStyle(.white)
-
-                                ForEach(MainInformation.Category.allCases) { category in
-                                    NavigationLink(destination: RecipesListView(category: category)) {
-                                        CategoryView(
-                                            category: category,
-                                            recipeCount: recipeData.recipeCount(for: category)
-                                        )
-                                        .frame(width: contentWidth)
-                                        .contentShape(RoundedRectangle(cornerRadius: 26, style: .continuous))
-                                    }
-                                    .buttonStyle(.plain)
+                            ForEach(MainInformation.Category.allCases) { category in
+                                NavigationLink(destination: RecipesListView(category: category)) {
+                                    CategoryView(
+                                        category: category,
+                                        recipeCount: recipeData.recipeCount(for: category)
+                                    )
+                                    .contentShape(RoundedRectangle(cornerRadius: 26, style: .continuous))
                                 }
+                                .buttonStyle(.plain)
                             }
-                            .frame(width: contentWidth, alignment: .leading)
                         }
-                        .frame(maxWidth: .infinity)
-                        .padding(.top, 16)
-                        .padding(.bottom, 28)
+                        .frame(maxWidth: 680, alignment: .leading)
                     }
+                    .frame(maxWidth: .infinity)
+                    .padding(.horizontal, 16)
+                    .padding(.top, 16)
+                    .padding(.bottom, 28)
                 }
-                .navigationTitle("CookLab")
-                .toolbarBackground(.hidden, for: .navigationBar)
+            }
+            .navigationTitle("")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbarBackground(.hidden, for: .navigationBar)
+            .toolbar {
+                ToolbarItem(placement: .principal) {
+                    BrandTitleView()
+                }
             }
         }
     }
@@ -71,16 +73,7 @@ struct CategoryView: View {
     }
 
     private var accentColor: Color {
-        switch category {
-        case .breakfast:
-            return Color(red: 1.0, green: 0.78, blue: 0.45)
-        case .lunch:
-            return Color(red: 0.48, green: 0.77, blue: 0.59)
-        case .dinner:
-            return Color(red: 0.9, green: 0.42, blue: 0.35)
-        case .other:
-            return Color(red: 0.69, green: 0.61, blue: 0.49)
-        }
+        AppColor.categoryAccent(for: category)
     }
 
     private var symbolName: String {
@@ -97,52 +90,70 @@ struct CategoryView: View {
     }
 
     var body: some View {
-        ZStack(alignment: .bottomLeading) {
+        ZStack {
             Image(category.rawValue)
                 .resizable()
                 .scaledToFill()
-                .frame(maxWidth: .infinity)
-                .frame(height: 190)
+                .frame(height: 206)
                 .clipped()
 
             LinearGradient(
-                colors: [.clear, Color.black.opacity(0.18), Color.black.opacity(0.8)],
+                colors: [
+                    AppColor.deepTeal.opacity(0.16),
+                    AppColor.ink.opacity(0.38),
+                    AppColor.ink.opacity(0.84)
+                ],
                 startPoint: .top,
                 endPoint: .bottom
             )
 
-            VStack(alignment: .leading, spacing: 10) {
-                HStack(spacing: 10) {
-                    Image(systemName: symbolName)
-                        .font(.subheadline.weight(.bold))
-                        .foregroundStyle(Color.black.opacity(0.75))
-                        .frame(width: 30, height: 30)
-                        .background(Circle().fill(accentColor))
-
-                    Text("\(recipeCount) recipe\(recipeCount == 1 ? "" : "s")")
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(.white.opacity(0.86))
-
-                    Spacer()
-
-                    Image(systemName: "arrow.right")
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(.white.opacity(0.88))
-                }
+            VStack(spacing: 10) {
+                Image(systemName: symbolName)
+                    .font(.system(size: 24, weight: .bold))
+                    .foregroundStyle(AppColor.ink)
+                    .frame(width: 48, height: 48)
+                    .background(
+                        Circle()
+                            .fill(
+                                LinearGradient(
+                                    colors: [
+                                        accentColor.opacity(0.95),
+                                        AppColor.accentSoft
+                                    ],
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                )
+                            )
+                    )
+                    .overlay(
+                        Circle()
+                            .stroke(.white.opacity(0.35), lineWidth: 1)
+                    )
 
                 Text(category.rawValue)
-                    .font(.title2.bold())
+                    .font(.system(size: 24, weight: .bold, design: .rounded))
                     .foregroundStyle(.white)
+                    .multilineTextAlignment(.center)
 
                 Text(summary)
-                    .font(.subheadline)
-                    .foregroundStyle(.white.opacity(0.92))
-                    .fixedSize(horizontal: false, vertical: true)
+                    .font(.footnote.weight(.medium))
+                    .foregroundStyle(.white.opacity(0.90))
+                    .multilineTextAlignment(.center)
+                    .lineLimit(2)
+                    .frame(maxWidth: 220)
+
+                Text("\(recipeCount) recipe\(recipeCount == 1 ? "" : "s")")
+                    .font(.caption.weight(.bold))
+                    .foregroundStyle(AppColor.accentSoft)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 6)
+                    .background(Color.white.opacity(0.14), in: Capsule())
             }
-            .padding(18)
+            .frame(maxWidth: .infinity)
+            .padding(.horizontal, 18)
+            .padding(.vertical, 16)
         }
-        .frame(maxWidth: .infinity)
-        .frame(height: 190)
+        .frame(height: 206)
         .clipShape(RoundedRectangle(cornerRadius: 26, style: .continuous))
         .overlay(
             RoundedRectangle(cornerRadius: 26, style: .continuous)
@@ -152,49 +163,53 @@ struct CategoryView: View {
     }
 }
 
-private struct MainPageBackgroundView: View {
+private struct BrandTitleView: View {
     var body: some View {
-        ZStack {
-            LinearGradient(
-                colors: [
-                    Color(red: 0.16, green: 0.12, blue: 0.1),
-                    Color(red: 0.2, green: 0.15, blue: 0.12),
-                    Color(red: 0.11, green: 0.17, blue: 0.14)
-                ],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
+        HStack(spacing: 10) {
+            ZStack {
+                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    .fill(
+                        LinearGradient(
+                            colors: [
+                                AppColor.deepTeal,
+                                AppColor.ink
+                            ],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
+                    .frame(width: 30, height: 30)
+
+                Image(systemName: "fork.knife")
+                    .font(.system(size: 14, weight: .bold))
+                    .foregroundStyle(AppColor.accentSoft)
+            }
+            .overlay(
+                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    .stroke(AppColor.mint.opacity(0.45), lineWidth: 1)
             )
-            .ignoresSafeArea()
 
-            Circle()
-                .fill(Color.orange.opacity(0.18))
-                .frame(width: 240, height: 240)
-                .blur(radius: 30)
-                .offset(x: -110, y: -260)
-
-            Circle()
-                .fill(Color.green.opacity(0.14))
-                .frame(width: 220, height: 220)
-                .blur(radius: 40)
-                .offset(x: 120, y: -20)
-
-            Circle()
-                .fill(Color.red.opacity(0.12))
-                .frame(width: 260, height: 260)
-                .blur(radius: 50)
-                .offset(x: 80, y: 330)
-
-            LinearGradient(
-                colors: [
-                    Color.black.opacity(0.2),
-                    Color.clear,
-                    Color.black.opacity(0.22)
-                ],
-                startPoint: .top,
-                endPoint: .bottom
-            )
-            .ignoresSafeArea()
+            Text("CookLab")
+                .font(.system(size: 22, weight: .bold, design: .rounded))
+                .foregroundStyle(
+                    LinearGradient(
+                        colors: [
+                            AppColor.accentSoft,
+                            AppColor.mint
+                        ],
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
+                )
+                .shadow(color: Color.black.opacity(0.18), radius: 8, y: 2)
         }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 6)
+        .background(Color.black.opacity(0.16), in: Capsule())
+        .overlay(
+            Capsule()
+                .stroke(Color.white.opacity(0.12), lineWidth: 1)
+        )
     }
 }
 
@@ -203,9 +218,9 @@ private struct HomeHeroView: View {
         ZStack(alignment: .bottomLeading) {
             LinearGradient(
                 colors: [
-                    Color(red: 0.96, green: 0.56, blue: 0.28),
-                    Color(red: 0.77, green: 0.28, blue: 0.23),
-                    Color(red: 0.33, green: 0.16, blue: 0.18)
+                    AppColor.deepTeal,
+                    Color(red: 0.07, green: 0.36, blue: 0.40),
+                    AppColor.ink
                 ],
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
@@ -216,7 +231,7 @@ private struct HomeHeroView: View {
                     Spacer()
                     Image(systemName: "fork.knife.circle.fill")
                         .font(.system(size: 68))
-                        .foregroundStyle(.white.opacity(0.18))
+                        .foregroundStyle(AppColor.accentSoft.opacity(0.2))
                 }
                 Spacer()
             }
@@ -260,8 +275,7 @@ private struct HeroPill: View {
             .foregroundStyle(.white)
             .padding(.horizontal, 12)
             .padding(.vertical, 7)
-            .background(Color.white.opacity(0.14))
-            .clipShape(Capsule())
+            .background(AppColor.mint.opacity(0.16), in: Capsule())
     }
 }
 
