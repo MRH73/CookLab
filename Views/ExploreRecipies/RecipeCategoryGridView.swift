@@ -16,7 +16,7 @@ struct RecipeCategoryGridView: View {
                 AppBackgroundView()
 
                 ScrollView(showsIndicators: false) {
-                    VStack(alignment: .leading, spacing: 18) {
+                    VStack(alignment: .leading, spacing: 16) {
                         HomeHeroView()
 
                         VStack(alignment: .leading, spacing: 14) {
@@ -226,26 +226,11 @@ private struct HomeHeroView: View {
                 endPoint: .bottomTrailing
             )
 
-            VStack {
-                HStack {
-                    Spacer()
-                    Image(systemName: "fork.knife.circle.fill")
-                        .font(.system(size: 68))
-                        .foregroundStyle(AppColor.accentSoft.opacity(0.2))
-                }
-                Spacer()
-            }
-            .padding(20)
-
             VStack(alignment: .leading, spacing: 10) {
-                Text("Your home for every recipe worth repeating.")
+                Text("Your home for every recipe.")
                     .font(.system(size: 30, weight: .bold, design: .rounded))
                     .foregroundStyle(.white)
 
-                Text("Explore breakfast, lunch, dinner, and extras in one clean kitchen notebook.")
-                    .font(.subheadline)
-                    .foregroundStyle(.white.opacity(0.9))
-                    .fixedSize(horizontal: false, vertical: true)
 
                 HStack(spacing: 10) {
                     HeroPill(label: "Organized")
@@ -256,7 +241,7 @@ private struct HomeHeroView: View {
             .padding(20)
         }
         .frame(maxWidth: .infinity)
-        .frame(height: 230)
+        .frame(height: 150)
         .clipShape(RoundedRectangle(cornerRadius: 30, style: .continuous))
         .overlay(
             RoundedRectangle(cornerRadius: 30, style: .continuous)
