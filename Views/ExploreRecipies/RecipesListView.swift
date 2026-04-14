@@ -27,7 +27,7 @@ struct RecipesListView: View {
                 .listRowBackground(Color.clear)
             } else {
                 ForEach(recipes) { recipe in
-                    NavigationLink(destination: RecipeDetailView(recipe: recipe)) {
+                    NavigationLink(destination: RecipeDetailView(recipeID: recipe.id)) {
                         RecipeRowView(recipe: recipe)
                     }
                 }

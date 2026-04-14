@@ -49,6 +49,10 @@ final class RecipeData: ObservableObject {
         recipes.filter { $0.mainInformation.category == category }.count
     }
 
+    func recipe(withID id: Recipe.ID) -> Recipe? {
+        recipes.first { $0.id == id }
+    }
+
     @discardableResult
     func add(recipe: Recipe) -> Bool {
         let cleanedRecipe = recipe.cleaned
@@ -58,6 +62,20 @@ final class RecipeData: ObservableObject {
         }
 
         recipes.append(cleanedRecipe)
+        persistRecipes()
+        return true
+    }
+
+    @discardableResult
+    func update(recipe: Recipe) -> Bool {
+        let cleanedRecipe = recipe.cleaned
+
+        guard cleanedRecipe.isValid,
+              let index = recipes.firstIndex(where: { $0.id == cleanedRecipe.id }) else {
+            return false
+        }
+
+        recipes[index] = cleanedRecipe
         persistRecipes()
         return true
     }
